@@ -43,3 +43,14 @@ This project was created to practice:
 - Network programming
 - Basic reconnaissance techniques
 - Python scripting for cybersecurity
+
+## Project Evolution
+
+Version 1
+Basic TCP port scanner using Python sockets
+
+Version 2
+Added command-line arguments and custom port ranges
+
+Version 3
+Implemented multithreading to significantly improve scan speed
