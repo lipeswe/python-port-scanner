@@ -1,56 +1,38 @@
 # Python Port Scanner
 
-A simple TCP port scanner written in Python to practice networking and cybersecurity fundamentals.
+A simple **multithreaded TCP port scanner written in Python** to practice networking and cybersecurity fundamentals.
+
+This project demonstrates how port scanning works at a low level using Python sockets.
+
+---
 
 ## Features
 
-- Scan common TCP ports
-- Timeout handling
-- Simple terminal output
+- TCP port scanning
+- Custom port range
+- Configurable number of threads
+- Hostname resolution
+- Scan duration measurement
 
-## How it works
+---
 
-The script uses Python's `socket` module to attempt TCP connections to a list of common ports.  
-If the connection succeeds, the port is considered **open**.
+## How It Works
+
+The script attempts to establish TCP connections to a range of ports on a target host.
+
+If a connection succeeds, the port is considered **open**.
+
+The scanner uses:
+
+- Python `socket` module for network connections
+- `threading` for parallel scanning
+- `argparse` for command-line arguments
+
+---
 
 ## Usage
 
 Run the script:
 
-python scanner.py
-
-Then enter a target host:
-
-scanme.nmap.org
-
-## Example Output
-
-Scanning scanme.nmap.org
-
-[OPEN] Port 80  
-[CLOSED] Port 21  
-
-## Technologies
-
-- Python
-- Socket library
-- TCP networking
-
-## Learning Goals
-
-This project was created to practice:
-
-- Network programming
-- Basic reconnaissance techniques
-- Python scripting for cybersecurity
-
-## Project Evolution
-
-Version 1
-Basic TCP port scanner using Python sockets
-
-Version 2
-Added command-line arguments and custom port ranges
-
-Version 3
-Implemented multithreading to significantly improve scan speed
+```bash
+python scanner.py <target>
