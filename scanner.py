@@ -4,35 +4,40 @@ import time
 import threading
 from queue import Queue
 
-# parse command-line arguments
-parser = argparse.ArgumentParser(description="Simple Python Port Scanner with Multithreading")
+# Argument parser
+parser = argparse.ArgumentParser(description="Multithreaded TCP Port Scanner")
+
 parser.add_argument("target", help="Target IP or hostname")
-parser.add_argument("-p", "--ports", default="1-1024", help="Port range (default: 1-1024)")
+parser.add_argument("-p", "--ports", default="1-1024", help="Port range (example: 20-80)")
+parser.add_argument("-t", "--threads", type=int, default=50, help="Number of threads (default: 50)")
 
 args = parser.parse_args()
 
 target = args.target
-port_range = args.ports.split("-")
-start_port = int(port_range[0])
-end_port = int(port_range[1])
+thread_count = args.threads
 
-print(f"\nScanning target: {target}")
-print(f"Port range: {start_port}-{end_port}\n")
+# Parse port range
+try:
+    start_port, end_port = map(int, args.ports.split("-"))
+except ValueError:
+    print("Invalid port range format. Use something like 20-80.")
+    exit()
 
-# resolve hostname to IP
+# Resolve hostname
 try:
     target_ip = socket.gethostbyname(target)
 except socket.gaierror:
     print("Hostname could not be resolved.")
     exit()
 
-# queue to store ports
-port_queue = Queue()
+print(f"\nScanning target: {target} ({target_ip})")
+print(f"Port range: {start_port}-{end_port}")
+print(f"Threads: {thread_count}\n")
 
-# lock to avoid messy terminal output
+# Queue and threading setup
+port_queue = Queue()
 print_lock = threading.Lock()
 
-# function executed by each thread
 def scan_port():
     while not port_queue.empty():
         port = port_queue.get()
@@ -49,20 +54,20 @@ def scan_port():
         s.close()
         port_queue.task_done()
 
-# fill the queue with ports
+# Fill queue
 for port in range(start_port, end_port + 1):
     port_queue.put(port)
 
 start_time = time.time()
 
-# create and start threads
+# Create threads
 threads = []
-for _ in range(50):
+for _ in range(thread_count):
     thread = threading.Thread(target=scan_port)
     thread.start()
     threads.append(thread)
 
-# wait until all ports are scanned
+# Wait for completion
 port_queue.join()
 
 end_time = time.time()
